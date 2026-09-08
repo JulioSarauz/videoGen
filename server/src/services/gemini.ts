@@ -61,6 +61,29 @@ async function callGeminiJson(parts: unknown[], responseSchema: unknown): Promis
 
 // --- Transcripcion ---
 
+// Reglas de estilo aplicadas a TODOS los prompts de imagen que Gemini genera
+// (transcripcion y reduccion), para que la primera generacion ya salga bien
+// y no haya que estar regenerando por resultados fuera de tono.
+const IMAGE_STYLE_RULES = [
+  "Reglas de estilo OBLIGATORIAS para cada prompt de imagen que generes:",
+  "1) Si la escena incluye personas, deben tener apariencia latina, especificamente ecuatoriana",
+  "(rasgos mestizos andinos o costeños de Ecuador), con vestimenta, entorno y detalles culturales",
+  "propios de Ecuador cuando la escena lo permita (nunca personas de otras etnias o nacionalidades).",
+  "2) Si la escena incluye cualquier texto legible (infografias, carteles, letreros, titulos,",
+  "etiquetas, texto en pantallas o rotulos), ese texto SIEMPRE debe estar escrito en español, nunca",
+  "en ingles: escribe el texto exacto a mostrar entre comillas dentro del prompt.",
+  "3) Enriquece cada prompt con el maximo detalle visual posible: iluminacion, estilo (foto",
+  "realista, ilustracion, etc segun corresponda), composicion y encuadre de camara, paleta de",
+  "colores, atmosfera/estado de animo. El objetivo es que el generador de imagenes no tenga",
+  "ambiguedad y acierte en el primer intento.",
+  "4) 'imagePromptEn' se sigue escribiendo mayormente en ingles (mejor comprension del modelo de",
+  "imagen), PERO las reglas 1 y 2 aplican igual: las personas siguen siendo de apariencia",
+  "ecuatoriana, y cualquier texto a renderizar en la imagen va en español entre comillas aunque",
+  "el resto del prompt este en ingles.",
+  "5) 'imagePromptEs' es la misma descripcion completa en español natural (no traduccion literal",
+  "palabra por palabra), cumpliendo las mismas reglas 1-3."
+].join(" ");
+
 const TRANSCRIBE_PROMPT = [
   "Transcribe el audio de este archivo completo (puede ser un audio o un video).",
   "Divide la transcripcion en segmentos por frase coherente: corta cada segmento",
@@ -71,9 +94,8 @@ const TRANSCRIBE_PROMPT = [
   "ten en cuenta el tema general, quien habla, el tono, y lo que se dijo antes y despues de ese",
   "segmento (no solo la frase aislada), para que la escena visual tenga coherencia con el resto",
   "del contenido y no luzca generica o desconectada.",
-  "Da ese prompt en dos versiones: 'imagePromptEn' (en ingles, rico en detalle visual, listo para",
-  "un generador de imagenes) e 'imagePromptEs' (la misma idea visual pero escrita en español,",
-  "no es traduccion literal palabra por palabra sino la misma descripcion natural en español)."
+  "Da ese prompt en dos versiones: 'imagePromptEn' e 'imagePromptEs'.",
+  IMAGE_STYLE_RULES
 ].join(" ");
 
 const TRANSCRIBE_SCHEMA = {
@@ -142,10 +164,10 @@ const REDUCE_PROMPT = [
   "Un segmento sin nada con que agruparse queda solo en su propio grupo.",
   "Para cada grupo resultante da: 'segmentIndices' (los indices originales que agrupaste),",
   "'start' (el menor start del grupo), 'end' (el mayor end del grupo), 'text' (resumen breve",
-  "de lo que cubre el grupo), 'imagePromptEn' (un prompt de imagen unico en ingles, usando el",
-  "contexto completo del grupo, que represente bien a todo el grupo), 'imagePromptEs' (la misma",
-  "idea visual en español, no traduccion literal) y 'reason' (explica en español, en 1-2 frases,",
-  "por que se agruparon esos segmentos o por que este segmento se dejo solo).",
+  "de lo que cubre el grupo), 'imagePromptEn', 'imagePromptEs' (un prompt de imagen unico usando",
+  "el contexto completo del grupo, que represente bien a todo el grupo) y 'reason' (explica en",
+  "español, en 1-2 frases, por que se agruparon esos segmentos o por que este segmento se dejo solo).",
+  IMAGE_STYLE_RULES,
   "Devuelve los grupos ordenados por 'start'. Los segmentos son:"
 ].join(" ");
 
