@@ -22,8 +22,7 @@ export const env = {
   jwtExpiresIn: optional("JWT_EXPIRES_IN", "12h"),
   cookieSecure: optional("COOKIE_SECURE", "true") === "true",
 
-  klingAccessKey: required("KLING_ACCESS_KEY"),
-  klingSecretKey: required("KLING_SECRET_KEY"),
+  klingApiKey: required("KLING_API_KEY"),
   klingBaseUrl: optional("KLING_BASE_URL", "https://api.klingai.com"),
   klingImage2VideoPath: optional("KLING_IMAGE2VIDEO_PATH", "/v1/videos/image2video"),
   klingImage2VideoStatusPath: optional(

@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { env } from "../../config/env.js";
 import type {
   GenerateVideoInput,
@@ -17,29 +16,17 @@ import type {
  * y ajusta KLING_IMAGE2VIDEO_PATH / KLING_IMAGE2VIDEO_STATUS_PATH en .env
  * si cambian.
  *
- * Autenticacion: Kling no usa un Bearer token fijo, sino un JWT de corta
- * duracion firmado por ti mismo con tu Access Key / Secret Key.
+ * Autenticacion: metodo de API Key unica (bearer token), el recomendado por
+ * Kling actualmente. El "Name" que se le pone a la key en su dashboard es
+ * solo una etiqueta para identificarla ahi, no forma parte de la credencial.
  */
-
-function buildAuthToken(): string {
-  const now = Math.floor(Date.now() / 1000);
-  return jwt.sign(
-    {
-      iss: env.klingAccessKey,
-      exp: now + 1800,
-      nbf: now - 5
-    },
-    env.klingSecretKey,
-    { algorithm: "HS256", header: { alg: "HS256", typ: "JWT" } }
-  );
-}
 
 async function klingFetch(path: string, init: RequestInit) {
   const res = await fetch(`${env.klingBaseUrl}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${buildAuthToken()}`,
+      Authorization: `Bearer ${env.klingApiKey}`,
       ...init.headers
     }
   });

@@ -18,9 +18,7 @@ services:
         value: 12h
       - key: COOKIE_SECURE
         value: true
-      - key: KLING_ACCESS_KEY
-        sync: false
-      - key: KLING_SECRET_KEY
+      - key: KLING_API_KEY
         sync: false
       - key: KLING_BASE_URL
         value: https://api.klingai.com

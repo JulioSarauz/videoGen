@@ -34,7 +34,7 @@ CI (`.github/workflows/deploy.yml` valida el build en cada push).
 ## Requisitos previos
 
 - Node.js 20+
-- Cuenta de desarrollador en Kling AI (Access Key + Secret Key)
+- Cuenta de desarrollador en Kling AI (API Key, kling.ai/dev/api-key)
 - Cuenta en Render o Railway para el hosting
 
 ## Configuracion local
@@ -70,7 +70,7 @@ npm run start   # sirve todo desde un solo proceso Node en PORT
    (Render puede usar `render.yaml` directamente).
 3. Configura las variables de entorno marcadas como `sync: false` en
    `render.yaml` (o su equivalente en Railway): `AUTH_PASSWORD_HASH`,
-   `KLING_ACCESS_KEY`, `KLING_SECRET_KEY`.
+   `KLING_API_KEY`.
 4. Activa auto-deploy en push a `main`.
 
 ## Verificar antes de produccion
@@ -90,10 +90,6 @@ de usar esto con trafico real (ver comentarios en
   entre la imagen original y la portada del video generado), no una garantia
   absoluta de que el modelo no altero texto o detalles finos.
 
+## Repositorio
 
-
-Repositorio en https://github.com/JulioSarauz/videoGen.git
-
-el clasificador de seguridad).
-2. Cuenta de desarrollador en Kling AI (Access Key/Secret Key) y verificar los paths exactos de su API contra su documentación vigente — los dejé como variables de entorno configurables en server/src/services/videoProvider/klingProvider.ts porque no tengo certeza de que sigan siendo los mismos.
-3. Generar AUTH_PASSWORD_HASH con node server/password" ycargar las variables de entorno en Render/Railway.
+https://github.com/JulioSarauz/videoGen.git
