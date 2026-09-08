@@ -24,9 +24,12 @@ const ALLOWED_MEDIA_MIME = new Set([
   "audio/opus",
   "audio/amr",
   "video/mp4",
+  "video/mpeg",
   "video/quicktime",
   "video/webm",
-  "video/3gpp"
+  "video/3gpp",
+  "video/x-msvideo",
+  "video/x-matroska"
 ]);
 
 const upload = multer({
