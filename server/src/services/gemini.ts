@@ -31,12 +31,30 @@ const RESPONSE_SCHEMA = {
   }
 };
 
-export class GeminiError extends Error {}
+// Si el video viene con un codec/mux raro (comun en exports de WhatsApp),
+// Gemini a veces falla al decodificar frames aunque el audio este perfecto.
+// En ese caso reintentamos el mismo archivo indicandole que es solo audio,
+// asi Gemini se salta el decodificador de video y lee directo la pista de audio.
+const VIDEO_TO_AUDIO_FALLBACK: Record<string, string> = {
+  "video/mp4": "audio/mp4",
+  "video/quicktime": "audio/mp4",
+  "video/webm": "audio/webm",
+  "video/3gpp": "audio/3gpp",
+  "video/mpeg": "audio/mpeg",
+  "video/x-msvideo": "audio/mp4",
+  "video/x-matroska": "audio/mp4"
+};
 
-export async function transcribeAudioWithSegments(
-  audioBuffer: Buffer,
-  mimeType: string
-): Promise<TranscriptSegment[]> {
+export class GeminiError extends Error {
+  constructor(
+    message: string,
+    public readonly status?: number
+  ) {
+    super(message);
+  }
+}
+
+async function callGemini(audioBuffer: Buffer, mimeType: string): Promise<TranscriptSegment[]> {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${env.geminiModel}:generateContent`,
     {
@@ -64,7 +82,7 @@ export async function transcribeAudioWithSegments(
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new GeminiError(`Gemini API respondio ${res.status}: ${body}`);
+    throw new GeminiError(`Gemini API respondio ${res.status}: ${body}`, res.status);
   }
 
   const json = await res.json();
@@ -73,6 +91,20 @@ export async function transcribeAudioWithSegments(
     throw new GeminiError("Gemini no devolvio contenido transcribible.");
   }
 
-  const segments = JSON.parse(rawText) as TranscriptSegment[];
-  return segments;
+  return JSON.parse(rawText) as TranscriptSegment[];
+}
+
+export async function transcribeAudioWithSegments(
+  audioBuffer: Buffer,
+  mimeType: string
+): Promise<TranscriptSegment[]> {
+  try {
+    return await callGemini(audioBuffer, mimeType);
+  } catch (err) {
+    const audioFallback = VIDEO_TO_AUDIO_FALLBACK[mimeType];
+    if (err instanceof GeminiError && err.status === 400 && audioFallback) {
+      return await callGemini(audioBuffer, audioFallback);
+    }
+    throw err;
+  }
 }
