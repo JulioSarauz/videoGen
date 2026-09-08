@@ -1,4 +1,4 @@
-import type { TranscriptSegment } from "../api";
+import type { ReducedGroup } from "../api";
 import { useImageVariants } from "../hooks/useImageVariants";
 
 function formatTime(seconds: number): string {
@@ -7,25 +7,22 @@ function formatTime(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-export default function SegmentCard({
-  segment,
-  index,
-  total
-}: {
-  segment: TranscriptSegment;
-  index: number;
-  total: number;
-}) {
-  const { prompt, setPrompt, images, loading, error, generate } = useImageVariants(
-    segment.imagePrompt
-  );
+export default function ReducedCard({ group, index, total }: { group: ReducedGroup; index: number; total: number }) {
+  const { prompt, setPrompt, images, loading, error, generate } = useImageVariants(group.imagePrompt);
+
+  const originalLabel =
+    group.segmentIndices.length > 1
+      ? `Combina los cuadros originales ${group.segmentIndices.map((i) => i + 1).join(", ")}`
+      : `Cuadro original ${group.segmentIndices[0] + 1}, sin combinar`;
 
   return (
     <div className="segment-card">
       <h3>
-        Cuadro {index + 1} de {total} — {formatTime(segment.start)} - {formatTime(segment.end)}
+        Cuadro reducido {index + 1} de {total} — {formatTime(group.start)} - {formatTime(group.end)}
       </h3>
-      <p className="segment-phrase">"{segment.text}"</p>
+      <p className="segment-phrase">{originalLabel}</p>
+      <p className="reduced-reason">{group.reason}</p>
+      <p className="segment-phrase">"{group.text}"</p>
 
       <label>
         Contexto / prompt de imagen (editable)

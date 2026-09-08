@@ -181,6 +181,66 @@ button[type="submit"]:disabled {
 
 /* --- Modulo de audio --- */
 
+.segment-count {
+  margin: 1rem 0 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.tab {
+  padding: 0.6rem 1rem;
+  border: none;
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.tab-active {
+  opacity: 1;
+  border-bottom-color: #4f7cff;
+  font-weight: 600;
+}
+
+.reduce-action {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.reduce-action button {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  border: 1px solid #4f7cff;
+  background: transparent;
+  color: #9ab6ff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reduce-action button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reduced-reason {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ffcf6b;
+}
+
 .segments-list {
   display: flex;
   flex-direction: column;

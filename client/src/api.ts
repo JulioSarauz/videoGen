@@ -83,3 +83,20 @@ export function generateSegmentImages(prompt: string) {
     body: JSON.stringify({ prompt })
   });
 }
+
+export interface ReducedGroup {
+  segmentIndices: number[];
+  start: number;
+  end: number;
+  text: string;
+  imagePrompt: string;
+  reason: string;
+}
+
+export function reduceSegments(segments: TranscriptSegment[]) {
+  return jsonFetch<{ groups: ReducedGroup[] }>("/api/audio/reduce", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ segments })
+  });
+}
