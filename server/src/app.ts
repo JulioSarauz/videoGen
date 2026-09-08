@@ -4,6 +4,7 @@ import express from "express";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { audioRouter } from "./routes/audio.js";
 import { authRouter } from "./routes/auth.js";
 import { generateRouter } from "./routes/generate.js";
 import { statusRouter } from "./routes/status.js";
@@ -22,6 +23,7 @@ export function createApp() {
   app.use("/api/auth", authRouter);
   app.use("/api/generate", generateRouter);
   app.use("/api/status", statusRouter);
+  app.use("/api/audio", audioRouter);
 
   app.get("/health", (_req, res) => res.json({ ok: true }));
 

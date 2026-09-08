@@ -32,3 +32,11 @@ services:
         value: 1080
       - key: FIDELITY_MAX_DIFF
         value: 0.18
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: MAX_AUDIO_MB
+        value: 25
+      - key: POLLINATIONS_BASE_URL
+        value: https://image.pollinations.ai/prompt

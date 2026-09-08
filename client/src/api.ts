@@ -58,3 +58,28 @@ export function submitGeneration(params: {
 export function getStatus(jobId: string) {
   return jsonFetch<StatusResponse>(`/api/status/${jobId}`);
 }
+
+export interface TranscriptSegment {
+  start: number;
+  end: number;
+  text: string;
+  imagePrompt: string;
+}
+
+export function transcribeAudio(file: File) {
+  const form = new FormData();
+  form.append("audio", file);
+
+  return jsonFetch<{ segments: TranscriptSegment[] }>("/api/audio/transcribe", {
+    method: "POST",
+    body: form
+  });
+}
+
+export function generateSegmentImages(prompt: string) {
+  return jsonFetch<{ images: string[] }>("/api/audio/generate-images", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+  });
+}

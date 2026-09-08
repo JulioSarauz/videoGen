@@ -1,9 +1,13 @@
 # genVideo
 
-Monolito privado (Node.js + Express + React) para generar video a partir de una
-imagen fija: subes la imagen, describes el movimiento en un prompt, y el
-sistema la anima intentando preservar al maximo texto, logos y composicion
-originales.
+Monolito privado (Node.js + Express + React) con un menu de modulos:
+
+- **Generar Video**: subes una imagen, describes el movimiento en un prompt,
+  y el sistema la anima intentando preservar al maximo texto, logos y
+  composicion originales.
+- **Analizar Audio**: subes un audio, se transcribe segmentado por frase
+  coherente (con tiempos), y por cada segmento se genera un prompt de imagen
+  editable con boton para generar 3 variantes.
 
 ## Por que no esta en GitHub Pages
 
@@ -30,11 +34,21 @@ CI (`.github/workflows/deploy.yml` valida el build en cada push).
   demasiado del original.
 - **Validacion de imagen**: rechaza imagenes por debajo de `MIN_LONG_EDGE_PX`
   (1080 por defecto) y no recomprime la imagen antes de enviarla al proveedor.
+- **Transcripcion de audio**: Gemini (`server/src/services/gemini.ts`), gratis
+  en su tier base. Devuelve segmentos {start, end, text, imagePrompt} via
+  `responseSchema` (salida JSON estructurada), cortando por frase coherente
+  en vez de intervalos fijos.
+- **Generacion de imagenes**: Pollinations.ai (`server/src/services/pollinations.ts`),
+  gratis y sin API key. Sin SLA ni cuenta detras, asi que puede fallar con
+  429/500 bajo carga alta del servicio compartido; el frontend permite
+  reintentar con el boton "Generar".
 
 ## Requisitos previos
 
-- Node.js 20+
+- Node.js 20+ (usa 24+ si vas a tocar `sharp`: la version 0.35 requiere
+  sintaxis de import que Node 20.x no soporta sin flags)
 - Cuenta de desarrollador en Kling AI (API Key, kling.ai/dev/api-key)
+- API Key de Gemini (aistudio.google.com/apikey) para el modulo de audio
 - Cuenta en Render o Railway para el hosting
 
 ## Configuracion local
@@ -70,7 +84,7 @@ npm run start   # sirve todo desde un solo proceso Node en PORT
    (Render puede usar `render.yaml` directamente).
 3. Configura las variables de entorno marcadas como `sync: false` en
    `render.yaml` (o su equivalente en Railway): `AUTH_PASSWORD_HASH`,
-   `KLING_API_KEY`.
+   `KLING_API_KEY`, `GEMINI_API_KEY`.
 4. Activa auto-deploy en push a `main`.
 
 ## Verificar antes de produccion

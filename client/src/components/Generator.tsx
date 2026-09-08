@@ -3,7 +3,7 @@ import { getStatus, logout, submitGeneration, type StatusResponse } from "../api
 
 const POLL_INTERVAL_MS = 4000;
 
-export default function Generator() {
+export default function Generator({ onBack }: { onBack: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
@@ -68,7 +68,10 @@ export default function Generator() {
   return (
     <div className="generator">
       <header>
-        <h1>genVideo</h1>
+        <button className="link" onClick={onBack}>
+          ← Menu
+        </button>
+        <h1>Generar Video</h1>
         <button className="link" onClick={() => logout().then(() => window.location.reload())}>
           Cerrar sesion
         </button>

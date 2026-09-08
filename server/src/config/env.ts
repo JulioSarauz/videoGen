@@ -41,5 +41,11 @@ export const env = {
   maxUploadMb: Number(optional("MAX_UPLOAD_MB", "15")),
   minLongEdgePx: Number(optional("MIN_LONG_EDGE_PX", "1080")),
 
-  fidelityMaxDiff: Number(optional("FIDELITY_MAX_DIFF", "0.18"))
+  fidelityMaxDiff: Number(optional("FIDELITY_MAX_DIFF", "0.18")),
+
+  geminiApiKey: required("GEMINI_API_KEY"),
+  geminiModel: optional("GEMINI_MODEL", "gemini-2.5-flash"),
+  maxAudioMb: Number(optional("MAX_AUDIO_MB", "25")),
+
+  pollinationsBaseUrl: optional("POLLINATIONS_BASE_URL", "https://image.pollinations.ai/prompt")
 };
