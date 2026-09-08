@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { getStatus, logout, submitGeneration, type StatusResponse } from "../api";
+import { useFileDrop } from "../hooks/useFileDrop";
 
 const POLL_INTERVAL_MS = 4000;
 
@@ -21,6 +22,8 @@ export default function Generator({ onBack }: { onBack: () => void }) {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(f ? URL.createObjectURL(f) : null);
   }
+
+  const { isDragging, dropHandlers } = useFileDrop(handleFile);
 
   function stopPolling() {
     if (pollTimer.current) {
@@ -78,11 +81,11 @@ export default function Generator({ onBack }: { onBack: () => void }) {
       </header>
 
       <form onSubmit={handleSubmit} className="generator-form">
-        <label className="dropzone">
+        <label className={`dropzone${isDragging ? " dropzone-active" : ""}`} {...dropHandlers}>
           {previewUrl ? (
             <img src={previewUrl} alt="Vista previa" />
           ) : (
-            <span>Selecciona una imagen (min. 1080px en el lado largo)</span>
+            <span>Selecciona o arrastra una imagen (min. 1080px en el lado largo)</span>
           )}
           <input
             type="file"

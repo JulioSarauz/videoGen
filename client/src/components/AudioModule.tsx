@@ -6,6 +6,7 @@ import {
   type ReducedGroup,
   type TranscriptSegment
 } from "../api";
+import { useFileDrop } from "../hooks/useFileDrop";
 import ReducedCard from "./ReducedCard";
 import SegmentCard from "./SegmentCard";
 import Tabs from "./Tabs";
@@ -22,6 +23,8 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
   const [reducing, setReducing] = useState(false);
   const [reduceError, setReduceError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("original");
+
+  const { isDragging, dropHandlers } = useFileDrop(setFile);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,8 +75,10 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
       </header>
 
       <form onSubmit={handleSubmit} className="generator-form">
-        <label className="dropzone">
-          <span>{file ? file.name : "Selecciona un archivo de audio o video (mp3, wav, mp4, etc.)"}</span>
+        <label className={`dropzone${isDragging ? " dropzone-active" : ""}`} {...dropHandlers}>
+          <span>
+            {file ? file.name : "Selecciona o arrastra un archivo de audio o video (mp3, wav, mp4, etc.)"}
+          </span>
           <input
             type="file"
             accept="audio/*,video/mp4,video/quicktime,video/webm,video/3gpp"
