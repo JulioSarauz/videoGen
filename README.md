@@ -52,8 +52,8 @@ cp .env.example .env
 Correr en dos terminales:
 
 ```bash
-npm run dev:server   # http://localhost:3000
-npm run dev:client   # http://localhost:5173 (proxy /api -> :3000)
+npm run dev:server   # http://localhost:3100
+npm run dev:client   # http://localhost:5173 (proxy /api -> :3100)
 ```
 
 ## Build de produccion (monolito unico)
