@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm run build
+
+  # El deploy real lo dispara Render/Railway automaticamente al detectar el
+  # push a main (integracion nativa con el repo de GitHub), no requiere un
+  # step adicional aqui. Este workflow solo valida que el monolito compila
+  # antes de que ese deploy ocurra.
