@@ -253,19 +253,60 @@ button[type="submit"]:disabled {
   margin-top: 1.5rem;
 }
 
-.segment-card {
+.accordion-item {
   background: #1a1d24;
   border-radius: 12px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   padding: 1rem;
+  background: none;
+  border: none;
+  color: #9ab6ff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion-chevron {
+  display: inline-block;
+  transition: transform 0.15s ease;
+  opacity: 0.7;
+}
+
+.accordion-chevron-open {
+  transform: rotate(90deg);
+}
+
+.accordion-body {
+  padding: 0 1rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.segment-card h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #9ab6ff;
+.accordion-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.accordion-controls button {
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #1a1d24;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 .segment-phrase {
@@ -274,7 +315,7 @@ button[type="submit"]:disabled {
   opacity: 0.9;
 }
 
-.segment-card button[type="button"] {
+.accordion-body > button[type="button"] {
   align-self: flex-start;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -285,7 +326,7 @@ button[type="submit"]:disabled {
   cursor: pointer;
 }
 
-.segment-card button[type="button"]:disabled {
+.accordion-body > button[type="button"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -296,9 +337,69 @@ button[type="submit"]:disabled {
   gap: 0.75rem;
 }
 
-.image-variants img {
+.image-variant {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.image-variant img {
   width: 100%;
   border-radius: 8px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  cursor: pointer;
+}
+
+.image-variant-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.image-variant-actions button {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #12141a;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.image-variant-actions button:hover {
+  border-color: #4f7cff;
+  color: #9ab6ff;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
 }

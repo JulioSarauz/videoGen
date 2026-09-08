@@ -63,7 +63,8 @@ export interface TranscriptSegment {
   start: number;
   end: number;
   text: string;
-  imagePrompt: string;
+  imagePromptEn: string;
+  imagePromptEs: string;
 }
 
 export function transcribeAudio(file: File) {
@@ -89,7 +90,8 @@ export interface ReducedGroup {
   start: number;
   end: number;
   text: string;
-  imagePrompt: string;
+  imagePromptEn: string;
+  imagePromptEs: string;
   reason: string;
 }
 

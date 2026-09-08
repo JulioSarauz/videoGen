@@ -4,7 +4,8 @@ export interface TranscriptSegment {
   start: number;
   end: number;
   text: string;
-  imagePrompt: string;
+  imagePromptEn: string;
+  imagePromptEs: string;
 }
 
 export interface ReducedGroup {
@@ -12,7 +13,8 @@ export interface ReducedGroup {
   start: number;
   end: number;
   text: string;
-  imagePrompt: string;
+  imagePromptEn: string;
+  imagePromptEs: string;
   reason: string;
 }
 
@@ -63,10 +65,15 @@ const TRANSCRIBE_PROMPT = [
   "Transcribe el audio de este archivo completo (puede ser un audio o un video).",
   "Divide la transcripcion en segmentos por frase coherente: corta cada segmento",
   "donde una idea/frase termina de forma natural, no en intervalos de tiempo fijos.",
-  "Para cada segmento da el tiempo de inicio y fin en segundos (numeros, con decimales si aplica),",
-  "el texto exacto de lo que se dice, y un 'imagePrompt': una descripcion visual rica en ingles,",
-  "lista para usar en un generador de imagenes, que represente la escena/idea de esa frase",
-  "(no traducir literal, describir visualmente el contenido/contexto de la frase)."
+  "Para cada segmento da el tiempo de inicio y fin en segundos (numeros, con decimales si aplica)",
+  "y el texto exacto de lo que se dice.",
+  "Ademas, para cada segmento escribe un prompt de imagen usando el CONTEXTO COMPLETO del audio:",
+  "ten en cuenta el tema general, quien habla, el tono, y lo que se dijo antes y despues de ese",
+  "segmento (no solo la frase aislada), para que la escena visual tenga coherencia con el resto",
+  "del contenido y no luzca generica o desconectada.",
+  "Da ese prompt en dos versiones: 'imagePromptEn' (en ingles, rico en detalle visual, listo para",
+  "un generador de imagenes) e 'imagePromptEs' (la misma idea visual pero escrita en español,",
+  "no es traduccion literal palabra por palabra sino la misma descripcion natural en español)."
 ].join(" ");
 
 const TRANSCRIBE_SCHEMA = {
@@ -77,9 +84,10 @@ const TRANSCRIBE_SCHEMA = {
       start: { type: "NUMBER" },
       end: { type: "NUMBER" },
       text: { type: "STRING" },
-      imagePrompt: { type: "STRING" }
+      imagePromptEn: { type: "STRING" },
+      imagePromptEs: { type: "STRING" }
     },
-    required: ["start", "end", "text", "imagePrompt"]
+    required: ["start", "end", "text", "imagePromptEn", "imagePromptEs"]
   }
 };
 
@@ -127,16 +135,17 @@ export async function transcribeAudioWithSegments(
 
 const REDUCE_PROMPT = [
   "Te doy una lista de segmentos transcritos de un audio/video, cada uno con su indice original,",
-  "tiempo de inicio/fin, texto y un prompt de imagen.",
+  "tiempo de inicio/fin, texto y prompts de imagen (ingles y español).",
   "Tu tarea: agrupar los segmentos que hablan del mismo tema/idea visual, de forma que un solo",
   "cuadro/imagen pueda representar a todo el grupo (para ahorrar fotogramas a generar).",
   "No agrupes segmentos que traten temas o escenas visualmente distintas, aunque esten seguidos.",
   "Un segmento sin nada con que agruparse queda solo en su propio grupo.",
   "Para cada grupo resultante da: 'segmentIndices' (los indices originales que agrupaste),",
   "'start' (el menor start del grupo), 'end' (el mayor end del grupo), 'text' (resumen breve",
-  "de lo que cubre el grupo), 'imagePrompt' (un prompt de imagen unico en ingles que represente",
-  "bien a todo el grupo) y 'reason' (explica en español, en 1-2 frases, por que se agruparon esos",
-  "segmentos o por que este segmento se dejo solo).",
+  "de lo que cubre el grupo), 'imagePromptEn' (un prompt de imagen unico en ingles, usando el",
+  "contexto completo del grupo, que represente bien a todo el grupo), 'imagePromptEs' (la misma",
+  "idea visual en español, no traduccion literal) y 'reason' (explica en español, en 1-2 frases,",
+  "por que se agruparon esos segmentos o por que este segmento se dejo solo).",
   "Devuelve los grupos ordenados por 'start'. Los segmentos son:"
 ].join(" ");
 
@@ -149,10 +158,19 @@ const REDUCE_SCHEMA = {
       start: { type: "NUMBER" },
       end: { type: "NUMBER" },
       text: { type: "STRING" },
-      imagePrompt: { type: "STRING" },
+      imagePromptEn: { type: "STRING" },
+      imagePromptEs: { type: "STRING" },
       reason: { type: "STRING" }
     },
-    required: ["segmentIndices", "start", "end", "text", "imagePrompt", "reason"]
+    required: [
+      "segmentIndices",
+      "start",
+      "end",
+      "text",
+      "imagePromptEn",
+      "imagePromptEs",
+      "reason"
+    ]
   }
 };
 

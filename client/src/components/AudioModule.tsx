@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   logout,
   reduceSegments as reduceSegmentsApi,
@@ -13,6 +13,16 @@ import Tabs from "./Tabs";
 
 type Tab = "original" | "reduced";
 
+function toggleInSet(set: Set<number>, index: number): Set<number> {
+  const next = new Set(set);
+  if (next.has(index)) {
+    next.delete(index);
+  } else {
+    next.add(index);
+  }
+  return next;
+}
+
 export default function AudioModule({ onBack }: { onBack: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [segments, setSegments] = useState<TranscriptSegment[] | null>(null);
@@ -24,7 +34,19 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
   const [reduceError, setReduceError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("original");
 
+  const [openOriginal, setOpenOriginal] = useState<Set<number>>(new Set());
+  const [openReduced, setOpenReduced] = useState<Set<number>>(new Set());
+
   const { isDragging, dropHandlers } = useFileDrop(setFile);
+
+  // Todos los cuadros empiezan desplegados por defecto al llegar datos nuevos.
+  useEffect(() => {
+    if (segments) setOpenOriginal(new Set(segments.map((_, i) => i)));
+  }, [segments]);
+
+  useEffect(() => {
+    if (reducedGroups) setOpenReduced(new Set(reducedGroups.map((_, i) => i)));
+  }, [reducedGroups]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -110,9 +132,25 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
 
           {activeTab === "original" && (
             <>
+              <div className="accordion-controls">
+                <button type="button" onClick={() => setOpenOriginal(new Set(segments.map((_, i) => i)))}>
+                  Expandir todo
+                </button>
+                <button type="button" onClick={() => setOpenOriginal(new Set())}>
+                  Comprimir todo
+                </button>
+              </div>
+
               <div className="segments-list">
                 {segments.map((segment, i) => (
-                  <SegmentCard key={i} segment={segment} index={i} total={segments.length} />
+                  <SegmentCard
+                    key={i}
+                    segment={segment}
+                    index={i}
+                    total={segments.length}
+                    isOpen={openOriginal.has(i)}
+                    onToggle={() => setOpenOriginal((prev) => toggleInSet(prev, i))}
+                  />
                 ))}
               </div>
 
@@ -126,11 +164,32 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
           )}
 
           {activeTab === "reduced" && reducedGroups && (
-            <div className="segments-list">
-              {reducedGroups.map((group, i) => (
-                <ReducedCard key={i} group={group} index={i} total={reducedGroups.length} />
-              ))}
-            </div>
+            <>
+              <div className="accordion-controls">
+                <button
+                  type="button"
+                  onClick={() => setOpenReduced(new Set(reducedGroups.map((_, i) => i)))}
+                >
+                  Expandir todo
+                </button>
+                <button type="button" onClick={() => setOpenReduced(new Set())}>
+                  Comprimir todo
+                </button>
+              </div>
+
+              <div className="segments-list">
+                {reducedGroups.map((group, i) => (
+                  <ReducedCard
+                    key={i}
+                    group={group}
+                    index={i}
+                    total={reducedGroups.length}
+                    isOpen={openReduced.has(i)}
+                    onToggle={() => setOpenReduced((prev) => toggleInSet(prev, i))}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </>
       )}

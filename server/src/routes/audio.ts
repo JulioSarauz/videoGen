@@ -78,7 +78,8 @@ const segmentSchema = z.object({
   start: z.number(),
   end: z.number(),
   text: z.string(),
-  imagePrompt: z.string()
+  imagePromptEn: z.string(),
+  imagePromptEs: z.string()
 });
 
 const reduceSchema = z.object({
