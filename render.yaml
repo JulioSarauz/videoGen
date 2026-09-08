@@ -37,6 +37,6 @@ services:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
       - key: MAX_AUDIO_MB
-        value: 25
+        value: 50
       - key: POLLINATIONS_BASE_URL
         value: https://image.pollinations.ai/prompt

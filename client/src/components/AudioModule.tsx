@@ -41,10 +41,10 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
 
       <form onSubmit={handleSubmit} className="generator-form">
         <label className="dropzone">
-          <span>{file ? file.name : "Selecciona un archivo de audio (mp3, wav, etc.)"}</span>
+          <span>{file ? file.name : "Selecciona un archivo de audio o video (mp3, wav, mp4, etc.)"}</span>
           <input
             type="file"
-            accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/mp4,audio/aac,audio/ogg,audio/flac,audio/webm"
+            accept="audio/*,video/mp4,video/quicktime,video/webm,video/3gpp"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
         </label>

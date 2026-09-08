@@ -8,7 +8,7 @@ export interface TranscriptSegment {
 }
 
 const SYSTEM_PROMPT = [
-  "Transcribe este audio completo.",
+  "Transcribe el audio de este archivo completo (puede ser un audio o un video).",
   "Divide la transcripcion en segmentos por frase coherente: corta cada segmento",
   "donde una idea/frase termina de forma natural, no en intervalos de tiempo fijos.",
   "Para cada segmento da el tiempo de inicio y fin en segundos (numeros, con decimales si aplica),",

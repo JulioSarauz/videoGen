@@ -8,7 +8,10 @@ import { buildImageVariantUrls } from "../services/pollinations.js";
 
 export const audioRouter = Router();
 
-const ALLOWED_AUDIO_MIME = new Set([
+// Gemini puede leer el audio directamente de un archivo de video (frames +
+// pista de audio), asi que aceptamos ambos: notas de voz y videos de
+// WhatsApp suelen venir como audio/ogg, audio/mp4 (m4a) o video/mp4.
+const ALLOWED_MEDIA_MIME = new Set([
   "audio/mpeg",
   "audio/mp3",
   "audio/wav",
@@ -17,7 +20,13 @@ const ALLOWED_AUDIO_MIME = new Set([
   "audio/aac",
   "audio/ogg",
   "audio/flac",
-  "audio/webm"
+  "audio/webm",
+  "audio/opus",
+  "audio/amr",
+  "video/mp4",
+  "video/quicktime",
+  "video/webm",
+  "video/3gpp"
 ]);
 
 const upload = multer({
@@ -27,11 +36,13 @@ const upload = multer({
 
 audioRouter.post("/transcribe", requireAuth, upload.single("audio"), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: "Falta el archivo de audio (campo 'audio')." });
+    return res.status(400).json({ error: "Falta el archivo de audio/video (campo 'audio')." });
   }
 
-  if (!ALLOWED_AUDIO_MIME.has(req.file.mimetype)) {
-    return res.status(422).json({ error: `Formato de audio no soportado: ${req.file.mimetype}` });
+  if (!ALLOWED_MEDIA_MIME.has(req.file.mimetype)) {
+    return res
+      .status(422)
+      .json({ error: `Formato no soportado: ${req.file.mimetype}` });
   }
 
   try {
