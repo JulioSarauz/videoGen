@@ -1,4 +1,12 @@
-import "dotenv/config";
+import { config } from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// server/src/config -> server/src -> server -> raiz del repo, donde vive .env.
+// Funciona igual en dev (tsx corre desde src/) y en build (node corre desde dist/,
+// que espeja la misma profundidad de carpetas).
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+config({ path: path.resolve(__dirname, "../../../.env") });
 
 function required(name: string, fallback?: string): string {
   const value = process.env[name] ?? fallback;
