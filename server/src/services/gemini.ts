@@ -1,4 +1,5 @@
 import { env } from "../config/env.js";
+import { recordGeminiCall } from "./geminiQuota.js";
 
 export interface TranscriptSegment {
   start: number;
@@ -50,6 +51,10 @@ async function callGeminiJson(parts: unknown[], responseSchema: unknown): Promis
     const body = await res.text().catch(() => "");
     throw new GeminiError(`Gemini API respondio ${res.status}: ${body}`, res.status);
   }
+
+  // Solo contamos llamadas exitosas: un 429 por cuota excedida ya viene
+  // rechazado por Google antes de consumir cupo real.
+  recordGeminiCall();
 
   const json = await res.json();
   const rawText: string | undefined = json?.candidates?.[0]?.content?.parts?.[0]?.text;

@@ -103,6 +103,13 @@ de usar esto con trafico real (ver comentarios en
 - El chequeo de fidelidad es una heuristica (diferencia en escala de grises
   entre la imagen original y la portada del video generado), no una garantia
   absoluta de que el modelo no altero texto o detalles finos.
+- El contador de cuota diaria de Gemini (`server/src/services/geminiQuota.ts`)
+  vive en memoria: se reinicia si el proceso se reinicia. En Render free, el
+  servicio se duerme tras 15min de inactividad y se reinicia al despertar, asi
+  que el contador mostrado puede volver a 0 aunque la cuota real de Google
+  siga agotada - el numero es una guia aproximada, no la fuente de verdad
+  (esa es el dashboard de Google AI Studio / el error 429 real que igual se
+  muestra si se agota).
 
 ## Repositorio
 

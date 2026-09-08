@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import {
+  getGeminiQuota,
   logout,
   reduceSegments as reduceSegmentsApi,
   transcribeAudio,
+  type GeminiUsage,
   type ReducedGroup,
   type TranscriptSegment
 } from "../api";
 import { useFileDrop } from "../hooks/useFileDrop";
+import QuotaBanner from "./QuotaBanner";
 import ReducedCard from "./ReducedCard";
 import SegmentCard from "./SegmentCard";
 import Tabs from "./Tabs";
@@ -37,7 +40,15 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
   const [openOriginal, setOpenOriginal] = useState<Set<number>>(new Set());
   const [openReduced, setOpenReduced] = useState<Set<number>>(new Set());
 
+  const [quota, setQuota] = useState<GeminiUsage | null>(null);
+
   const { isDragging, dropHandlers } = useFileDrop(setFile);
+
+  useEffect(() => {
+    getGeminiQuota()
+      .then(setQuota)
+      .catch(() => {});
+  }, []);
 
   // Todos los cuadros empiezan desplegados por defecto al llegar datos nuevos.
   useEffect(() => {
@@ -62,6 +73,7 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
     try {
       const result = await transcribeAudio(file);
       setSegments(result.segments);
+      setQuota(result.quota);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al transcribir el audio.");
     } finally {
@@ -76,6 +88,7 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
     try {
       const result = await reduceSegmentsApi(segments);
       setReducedGroups(result.groups);
+      setQuota(result.quota);
       setActiveTab("reduced");
     } catch (err) {
       setReduceError(err instanceof Error ? err.message : "Error reduciendo cuadros.");
@@ -96,6 +109,8 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
         </button>
       </header>
 
+      <QuotaBanner quota={quota} />
+
       <form onSubmit={handleSubmit} className="generator-form">
         <label className={`dropzone${isDragging ? " dropzone-active" : ""}`} {...dropHandlers}>
           <span>
@@ -110,7 +125,7 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
 
         {error && <p className="error">{error}</p>}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || (quota !== null && quota.used >= quota.limit)}>
           {loading ? "Transcribiendo..." : "Transcribir"}
         </button>
       </form>
@@ -156,7 +171,16 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
 
               <div className="reduce-action">
                 {reduceError && <p className="error">{reduceError}</p>}
-                <button type="button" onClick={handleReduce} disabled={reducing}>
+                {quota && (
+                  <p className="quota-hint">
+                    Esta accion consumira 1 solicitud de Gemini (vas {quota.used} de {quota.limit} hoy).
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={handleReduce}
+                  disabled={reducing || (quota !== null && quota.used >= quota.limit)}
+                >
                   {reducing ? "Analizando y reduciendo..." : "Reducir"}
                 </button>
               </div>

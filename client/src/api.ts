@@ -67,11 +67,21 @@ export interface TranscriptSegment {
   imagePromptEs: string;
 }
 
+export interface GeminiUsage {
+  used: number;
+  limit: number;
+  date: string;
+}
+
+export function getGeminiQuota() {
+  return jsonFetch<GeminiUsage>("/api/audio/quota");
+}
+
 export function transcribeAudio(file: File) {
   const form = new FormData();
   form.append("audio", file);
 
-  return jsonFetch<{ segments: TranscriptSegment[] }>("/api/audio/transcribe", {
+  return jsonFetch<{ segments: TranscriptSegment[]; quota: GeminiUsage }>("/api/audio/transcribe", {
     method: "POST",
     body: form
   });
@@ -96,7 +106,7 @@ export interface ReducedGroup {
 }
 
 export function reduceSegments(segments: TranscriptSegment[]) {
-  return jsonFetch<{ groups: ReducedGroup[] }>("/api/audio/reduce", {
+  return jsonFetch<{ groups: ReducedGroup[]; quota: GeminiUsage }>("/api/audio/reduce", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ segments })

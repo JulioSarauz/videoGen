@@ -45,6 +45,7 @@ export const env = {
 
   geminiApiKey: required("GEMINI_API_KEY"),
   geminiModel: optional("GEMINI_MODEL", "gemini-2.5-flash"),
+  geminiDailyQuota: Number(optional("GEMINI_DAILY_QUOTA", "20")),
   maxAudioMb: Number(optional("MAX_AUDIO_MB", "50")),
 
   pollinationsBaseUrl: optional("POLLINATIONS_BASE_URL", "https://image.pollinations.ai/prompt")

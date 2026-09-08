@@ -186,6 +186,34 @@ button[type="submit"]:disabled {
 
 /* --- Modulo de audio --- */
 
+.quota-banner {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  background: #1a1d24;
+  border: 1px solid #333;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.quota-banner.quota-near {
+  border-color: #ffcf6b;
+  color: #ffcf6b;
+  opacity: 1;
+}
+
+.quota-banner.quota-limit {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  opacity: 1;
+}
+
+.quota-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
 .segment-count {
   margin: 1rem 0 0;
   opacity: 0.8;

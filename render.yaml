@@ -36,6 +36,8 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
+      - key: GEMINI_DAILY_QUOTA
+        value: 20
       - key: MAX_AUDIO_MB
         value: 50
       - key: POLLINATIONS_BASE_URL

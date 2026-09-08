@@ -4,9 +4,14 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { GeminiError, reduceSegments, transcribeAudioWithSegments } from "../services/gemini.js";
+import { getGeminiUsage } from "../services/geminiQuota.js";
 import { buildImageVariantUrls } from "../services/pollinations.js";
 
 export const audioRouter = Router();
+
+audioRouter.get("/quota", requireAuth, (_req, res) => {
+  res.json(getGeminiUsage());
+});
 
 // Gemini puede leer el audio directamente de un archivo de video (frames +
 // pista de audio), asi que aceptamos ambos: notas de voz y videos de
@@ -50,7 +55,7 @@ audioRouter.post("/transcribe", requireAuth, upload.single("audio"), async (req,
 
   try {
     const segments = await transcribeAudioWithSegments(req.file.buffer, req.file.mimetype);
-    res.json({ segments });
+    res.json({ segments, quota: getGeminiUsage() });
   } catch (err) {
     if (err instanceof GeminiError) {
       return res.status(502).json({ error: err.message });
@@ -94,7 +99,7 @@ audioRouter.post("/reduce", requireAuth, async (req, res) => {
 
   try {
     const groups = await reduceSegments(parsed.data.segments);
-    res.json({ groups });
+    res.json({ groups, quota: getGeminiUsage() });
   } catch (err) {
     if (err instanceof GeminiError) {
       return res.status(502).json({ error: err.message });
