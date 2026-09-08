@@ -93,3 +93,7 @@ de usar esto con trafico real (ver comentarios en
 
 
 Repositorio en https://github.com/JulioSarauz/videoGen.git
+
+el clasificador de seguridad).
+2. Cuenta de desarrollador en Kling AI (Access Key/Secret Key) y verificar los paths exactos de su API contra su documentación vigente — los dejé como variables de entorno configurables en server/src/services/videoProvider/klingProvider.ts porque no tengo certeza de que sigan siendo los mismos.
+3. Generar AUTH_PASSWORD_HASH con node server/password" ycargar las variables de entorno en Render/Railway.
