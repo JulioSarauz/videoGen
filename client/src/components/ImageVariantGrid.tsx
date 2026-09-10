@@ -30,10 +30,14 @@ export default function ImageVariantGrid({ images }: { images: string[] }) {
           <div key={i} className="image-variant">
             <img src={src} alt={`Variante ${i + 1}`} loading="lazy" />
             <div className="image-variant-actions">
-              <button type="button" onClick={() => setZoomedSrc(src)}>
+              <button type="button" className="btn-ghost" onClick={() => setZoomedSrc(src)}>
                 Ampliar
               </button>
-              <button type="button" onClick={() => downloadImage(src, `variante-${i + 1}.jpg`)}>
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => downloadImage(src, `variante-${i + 1}.jpg`)}
+              >
                 Descargar
               </button>
             </div>

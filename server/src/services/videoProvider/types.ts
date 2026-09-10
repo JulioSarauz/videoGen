@@ -6,6 +6,11 @@ export interface GenerateVideoInput {
   /** 0-1: que tan libre es el modelo para moverse. Bajo = mas fiel a la imagen original. */
   motionStrength: number;
   durationSeconds: number;
+  /** Slug de modelo de OpenRouter (ej. "google/veo-3.1-fast"), elegido en el selector del cliente. */
+  model: string;
+  resolution?: string;
+  aspectRatio?: string;
+  generateAudio?: boolean;
 }
 
 export type JobStatus = "queued" | "processing" | "succeeded" | "failed";
@@ -19,6 +24,8 @@ export interface JobResult {
   videoUrl?: string;
   coverImageUrl?: string;
   error?: string;
+  /** Costo real cobrado por el proveedor (USD), cuando lo informa al completar. */
+  costUsd?: number;
 }
 
 export interface VideoProvider {

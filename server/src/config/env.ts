@@ -30,13 +30,13 @@ export const env = {
   jwtExpiresIn: optional("JWT_EXPIRES_IN", "12h"),
   cookieSecure: optional("COOKIE_SECURE", "true") === "true",
 
-  klingApiKey: required("KLING_API_KEY"),
-  klingBaseUrl: optional("KLING_BASE_URL", "https://api.klingai.com"),
-  klingImage2VideoPath: optional("KLING_IMAGE2VIDEO_PATH", "/v1/videos/image2video"),
-  klingImage2VideoStatusPath: optional(
-    "KLING_IMAGE2VIDEO_STATUS_PATH",
-    "/v1/videos/image2video"
-  ),
+  // --- Proveedor de video activo: OpenRouter (enruta a Kling/Veo/Minimax/  ---
+  // --- Seedance/Wan/Sora, entre otros) con una sola key y auto-recarga.    ---
+  openrouterApiKey: required("OPENROUTER_API_KEY"),
+  openrouterBaseUrl: optional("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+  // Modelo de texto usado para sugerencias de prompt (no genera video).
+  // Verificar en openrouter.ai/models que el slug siga vigente.
+  openrouterTextModel: optional("OPENROUTER_TEXT_MODEL", "openai/gpt-4o-mini"),
 
   maxUploadMb: Number(optional("MAX_UPLOAD_MB", "15")),
   minLongEdgePx: Number(optional("MIN_LONG_EDGE_PX", "1080")),

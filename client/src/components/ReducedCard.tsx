@@ -57,7 +57,7 @@ export default function ReducedCard({
 
       {error && <p className="error">{error}</p>}
 
-      <button type="button" onClick={generate} disabled={loading}>
+      <button type="button" className="btn-synth" onClick={generate} disabled={loading}>
         {loading ? "Generando..." : "Generar"}
       </button>
 

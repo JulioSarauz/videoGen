@@ -101,7 +101,7 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
     <div className="generator">
       <header>
         <button className="link" onClick={onBack}>
-          ← Menu
+          <span className="material-symbols-rounded">arrow_back</span> Menu
         </button>
         <h1>Analizar Audio</h1>
         <button className="link" onClick={() => logout().then(() => window.location.reload())}>
@@ -125,9 +125,15 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
 
         {error && <p className="error">{error}</p>}
 
-        <button type="submit" disabled={loading || (quota !== null && quota.used >= quota.limit)}>
-          {loading ? "Transcribiendo..." : "Transcribir"}
-        </button>
+        <div className="submit-row">
+          <button
+            type="submit"
+            className="btn-synth"
+            disabled={loading || (quota !== null && quota.used >= quota.limit)}
+          >
+            {loading ? "Transcribiendo..." : "Transcribir"}
+          </button>
+        </div>
       </form>
 
       {segments && (
@@ -148,10 +154,14 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
           {activeTab === "original" && (
             <>
               <div className="accordion-controls">
-                <button type="button" onClick={() => setOpenOriginal(new Set(segments.map((_, i) => i)))}>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => setOpenOriginal(new Set(segments.map((_, i) => i)))}
+                >
                   Expandir todo
                 </button>
-                <button type="button" onClick={() => setOpenOriginal(new Set())}>
+                <button type="button" className="btn-ghost" onClick={() => setOpenOriginal(new Set())}>
                   Comprimir todo
                 </button>
               </div>
@@ -178,6 +188,7 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
                 )}
                 <button
                   type="button"
+                  className="btn-synth"
                   onClick={handleReduce}
                   disabled={reducing || (quota !== null && quota.used >= quota.limit)}
                 >
@@ -192,11 +203,12 @@ export default function AudioModule({ onBack }: { onBack: () => void }) {
               <div className="accordion-controls">
                 <button
                   type="button"
+                  className="btn-ghost"
                   onClick={() => setOpenReduced(new Set(reducedGroups.map((_, i) => i)))}
                 >
                   Expandir todo
                 </button>
-                <button type="button" onClick={() => setOpenReduced(new Set())}>
+                <button type="button" className="btn-ghost" onClick={() => setOpenReduced(new Set())}>
                   Comprimir todo
                 </button>
               </div>

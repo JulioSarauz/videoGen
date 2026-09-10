@@ -7,7 +7,10 @@ import { fileURLToPath } from "node:url";
 import { audioRouter } from "./routes/audio.js";
 import { authRouter } from "./routes/auth.js";
 import { generateRouter } from "./routes/generate.js";
+import { promptSuggestionsRouter } from "./routes/promptSuggestions.js";
 import { statusRouter } from "./routes/status.js";
+import { videoModelsRouter } from "./routes/videoModels.js";
+import { videoProxyRouter } from "./routes/videoProxy.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(__dirname, "public");
@@ -24,6 +27,9 @@ export function createApp() {
   app.use("/api/generate", generateRouter);
   app.use("/api/status", statusRouter);
   app.use("/api/audio", audioRouter);
+  app.use("/api/video-models", videoModelsRouter);
+  app.use("/api/video-proxy", videoProxyRouter);
+  app.use("/api/prompt-suggestions", promptSuggestionsRouter);
 
   app.get("/health", (_req, res) => res.json({ ok: true }));
 

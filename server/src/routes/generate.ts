@@ -18,7 +18,16 @@ const upload = multer({
 const bodySchema = z.object({
   prompt: z.string().min(3, "Describe el movimiento que quieres ver."),
   motionStrength: z.coerce.number().min(0).max(1).default(0.3),
-  durationSeconds: z.coerce.number().min(2).max(10).default(5)
+  durationSeconds: z.coerce.number().min(1).max(20).default(5),
+  model: z.string().min(1, "Selecciona un modelo de video."),
+  resolution: z.string().optional(),
+  aspectRatio: z.string().optional(),
+  // z.coerce.boolean() trata cualquier string no vacio (incluido "false") como true,
+  // por eso se compara explicitamente contra "true".
+  generateAudio: z
+    .string()
+    .optional()
+    .transform((value) => value === "true")
 });
 
 generateRouter.post("/", requireAuth, upload.single("image"), async (req, res) => {
@@ -40,7 +49,11 @@ generateRouter.post("/", requireAuth, upload.single("image"), async (req, res) =
       imageFormat: image.format,
       prompt,
       motionStrength: parsedBody.data.motionStrength,
-      durationSeconds: parsedBody.data.durationSeconds
+      durationSeconds: parsedBody.data.durationSeconds,
+      model: parsedBody.data.model,
+      resolution: parsedBody.data.resolution,
+      aspectRatio: parsedBody.data.aspectRatio,
+      generateAudio: parsedBody.data.generateAudio
     });
 
     const jobId = createJob(job.providerJobId, image.buffer);

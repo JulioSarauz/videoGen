@@ -32,7 +32,8 @@ statusRouter.get("/:jobId", requireAuth, async (req, res) => {
     res.json({
       status: "succeeded",
       videoUrl: result.videoUrl,
-      fidelity
+      fidelity,
+      costUsd: result.costUsd
     });
   } catch (err) {
     console.error("Error consultando estado del job:", err);

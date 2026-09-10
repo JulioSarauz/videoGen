@@ -33,7 +33,7 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
           autoFocus
         />
         {error && <p className="error">{error}</p>}
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn-synth" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>

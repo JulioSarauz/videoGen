@@ -10,6 +10,7 @@ export interface StatusResponse {
   videoUrl?: string;
   fidelity?: FidelityResult;
   error?: string;
+  costUsd?: number;
 }
 
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
@@ -42,12 +43,20 @@ export function submitGeneration(params: {
   prompt: string;
   motionStrength: number;
   durationSeconds: number;
+  model: string;
+  resolution?: string;
+  aspectRatio?: string;
+  generateAudio: boolean;
 }) {
   const form = new FormData();
   form.append("image", params.file);
   form.append("prompt", params.prompt);
   form.append("motionStrength", String(params.motionStrength));
   form.append("durationSeconds", String(params.durationSeconds));
+  form.append("model", params.model);
+  if (params.resolution) form.append("resolution", params.resolution);
+  if (params.aspectRatio) form.append("aspectRatio", params.aspectRatio);
+  form.append("generateAudio", String(params.generateAudio));
 
   return jsonFetch<{ jobId: string }>("/api/generate", {
     method: "POST",
@@ -57,6 +66,29 @@ export function submitGeneration(params: {
 
 export function getStatus(jobId: string) {
   return jsonFetch<StatusResponse>(`/api/status/${jobId}`);
+}
+
+export interface VideoModelInfo {
+  id: string;
+  name: string;
+  description?: string;
+  supportedDurations: number[];
+  supportedResolutions: string[];
+  supportedAspectRatios: string[];
+  generateAudioSupported: boolean;
+  pricingSkus: Record<string, string>;
+}
+
+export function getVideoModels() {
+  return jsonFetch<{ models: VideoModelInfo[] }>("/api/video-models");
+}
+
+export function suggestPrompts(prompt: string) {
+  return jsonFetch<{ suggestions: string[] }>("/api/prompt-suggestions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+  });
 }
 
 export interface TranscriptSegment {
