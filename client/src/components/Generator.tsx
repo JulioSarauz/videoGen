@@ -84,6 +84,8 @@ export default function Generator({ onBack }: { onBack: () => void }) {
     setPreviewUrl(f ? URL.createObjectURL(f) : null);
   }
 
+  const generating = submitting || status?.status === "queued" || status?.status === "processing";
+
   const { isDragging, dropHandlers } = useFileDrop(handleFile);
 
   function stopPolling() {
@@ -104,6 +106,7 @@ export default function Generator({ onBack }: { onBack: () => void }) {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error consultando el estado.");
+        setStatus({ status: "failed" });
         stopPolling();
       }
     }, POLL_INTERVAL_MS);
@@ -156,7 +159,16 @@ export default function Generator({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="generator">
+    <div className="generator" aria-busy={generating}>
+      {generating && (
+        <div className="generating-overlay" role="alert">
+          <div className="generating-spinner" />
+          <p className="generating-title">Generando tu video...</p>
+          <p className="generating-hint">
+            Esto puede tardar varios minutos. No cierres esta pagina: se desbloqueara sola cuando el video este listo.
+          </p>
+        </div>
+      )}
       <header>
         <button className="link" onClick={onBack}>
           <span className="material-symbols-rounded">arrow_back</span> Menu
@@ -336,7 +348,7 @@ export default function Generator({ onBack }: { onBack: () => void }) {
         </div>
       </form>
 
-      {status && (
+      {status && !generating && (
         <div className="status-panel">
           <p>
             Estado: <strong>{status.status}</strong>
