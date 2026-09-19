@@ -15,7 +15,7 @@ GitHub Pages solo sirve archivos estaticos y no puede ejecutar el backend que
 guarda las credenciales de la API de video ni el login con contrasena
 compartida. Por eso el proyecto se despliega completo (frontend + backend) en
 un unico servicio Node.js (Render o Railway). GitHub queda como repositorio +
-CI (`.github/workflows/deploy.yml` valida el build en cada push).
+CI/CD (`.github/workflows/ci-cd.yml`: valida y despliega a Render y Vercel).
 
 ## Arquitectura
 
