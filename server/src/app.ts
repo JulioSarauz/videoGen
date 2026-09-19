@@ -4,6 +4,7 @@ import express from "express";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { balanceRouter } from "./routes/balance.js";
 import { audioRouter } from "./routes/audio.js";
 import { authRouter } from "./routes/auth.js";
 import { generateRouter } from "./routes/generate.js";
@@ -27,6 +28,7 @@ export function createApp() {
   app.use("/api/generate", generateRouter);
   app.use("/api/status", statusRouter);
   app.use("/api/audio", audioRouter);
+  app.use("/api/balance", balanceRouter);
   app.use("/api/video-models", videoModelsRouter);
   app.use("/api/video-proxy", videoProxyRouter);
   app.use("/api/prompt-suggestions", promptSuggestionsRouter);

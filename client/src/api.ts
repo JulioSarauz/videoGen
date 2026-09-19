@@ -144,3 +144,13 @@ export function reduceSegments(segments: TranscriptSegment[]) {
     body: JSON.stringify({ segments })
   });
 }
+
+export interface OpenRouterBalance {
+  total: number | null;
+  used: number;
+  remaining: number | null;
+}
+
+export function getBalance() {
+  return jsonFetch<OpenRouterBalance>("/api/balance");
+}

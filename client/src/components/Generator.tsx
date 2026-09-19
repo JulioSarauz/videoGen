@@ -8,6 +8,7 @@ import {
   type StatusResponse,
   type VideoModelInfo
 } from "../api";
+import BalanceBanner from "./BalanceBanner";
 import { useFileDrop } from "../hooks/useFileDrop";
 import { estimateVideoCost } from "../utils/videoPricing";
 
@@ -165,6 +166,8 @@ export default function Generator({ onBack }: { onBack: () => void }) {
           Cerrar sesion
         </button>
       </header>
+
+      <BalanceBanner refreshKey={status?.status} />
 
       <form onSubmit={handleSubmit} className="synth-rack">
         <div className="panel panel-wide">
