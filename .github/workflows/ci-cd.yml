@@ -37,21 +37,5 @@ jobs:
           test -n "$RENDER_DEPLOY_HOOK_URL" || { echo "Falta el secret RENDER_DEPLOY_HOOK_URL"; exit 1; }
           curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK_URL"
 
-  # Frontend -> Vercel (proyecto front-end-llm)
-  deploy-vercel:
-    needs: build
-    if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install --global vercel@latest
-      - run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-      - run: vercel build --prod --token="$VERCEL_TOKEN"
-      - run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+  # El frontend (Vercel, proyecto front-end-llm) se despliega con la integracion
+  # Git nativa de Vercel al detectar el push a main; no requiere job aqui.
